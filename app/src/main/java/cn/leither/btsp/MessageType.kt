@@ -33,3 +33,10 @@ class LoadingMessage(val msgType: Type, val value: Any?): EventEmitter.Message{
         CONNECTFAILED("CONNECTFAILED")
     }
 }
+
+class IntermediateMessage(val msgType: Type, val value: Any): EventEmitter.Message{
+    override val type = "IntermediateMessage"
+    enum class Type(val value: String){
+        SWITCH_VIEW("SWITCH_VIEW")
+    }
+}

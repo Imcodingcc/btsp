@@ -11,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArraySet
 /**
  * Created by lvqiang on 17-8-28.
  */
-class LoadingState(var stage : Stage = Stage.INIT, val activity: LoadingActivity): Serializable, State{
+class LoadingState(var stage : Stage = Stage.INIT, val activity: LoadingFragment): Serializable, State{
     lateinit var ba: BluetoothAdapter
     lateinit var devices: CopyOnWriteArraySet<BluetoothDevice>
     var sockets: MutableList<BluetoothSocket> = CopyOnWriteArrayList<BluetoothSocket>()

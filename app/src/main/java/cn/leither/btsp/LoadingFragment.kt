@@ -1,37 +1,38 @@
 package cn.leither.btsp
 
-import android.app.Activity
+import android.app.Fragment
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.databinding.DataBindingUtil
-import android.os.Bundle
-import android.widget.Toast
-import cn.leither.btsp.databinding.ActivityLoadingBinding
 import android.content.Intent
 import android.content.IntentFilter
+import android.databinding.DataBindingUtil
+import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import cn.leither.btsp.databinding.FragmentLoadingBinding
 import java.util.concurrent.CopyOnWriteArraySet
 
-
 /**
- * Created by lvqiang on 17-8-28.
+ * Created by lvqiang on 17-8-29.
  */
-class LoadingActivity(): Activity() {
+class LoadingFragment: Fragment(){
 
+    var binding: FragmentLoadingBinding? = null
     private lateinit var state: LoadingState
     private val OPEN_BLUETOOTH_SUCCESS: Int = 1
-    private var binding: ActivityLoadingBinding? = null
     private val ee = EventEmitter.default
     private var mainReceiver: BtspReceiver? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mainReceiver = BtspReceiver()
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_loading)
-        //state = LoadingState(activity = this)
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_loading, container, false)
+        state = LoadingState(activity = this)
         state.devices = CopyOnWriteArraySet<BluetoothDevice>()
         state.toStage(LoadingState.Stage.INIT, this::toInit)
+        return binding!!.root
     }
+
 
     fun toInit(old: LoadingState){
         registerReceiver()
@@ -54,10 +55,10 @@ class LoadingActivity(): Activity() {
         val msg = message as LoadingMessage
         if(msg.msgType == LoadingMessage.Type.INIT && msg.value == false){
             val prompt = "Device does not support Bluetooth"
-            Toast.makeText(this, prompt, Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, prompt, Toast.LENGTH_SHORT).show()
             binding!!.prompt = prompt
         }else if(msg.msgType == LoadingMessage.Type.INIT && msg.value as Boolean){
-            //binding!!.ballClipRotatePulseIndicator.smoothToHide()
+            binding!!.ballClipRotatePulseIndicator.smoothToHide()
             binding!!.prompt = ""
         }
     }
@@ -73,7 +74,7 @@ class LoadingActivity(): Activity() {
         val msg = message as AdapterMessage
         when(msg.msgType){
             AdapterMessage.Type.STARTED -> {
-               // binding!!.ballClipRotatePulseIndicator.smoothToShow()
+                binding!!.ballClipRotatePulseIndicator.smoothToShow()
                 binding!!.prompt = "scanning"
             }
             AdapterMessage.Type.STOPPED -> {
@@ -119,7 +120,7 @@ class LoadingActivity(): Activity() {
         val msg = message as LoadingMessage
         if(msg.msgType == LoadingMessage.Type.CONNECTED){
             binding!!.prompt = "connected"
-            //binding!!.ballClipRotatePulseIndicator.hide()
+            binding!!.ballClipRotatePulseIndicator.hide()
         }
     }
 
@@ -133,7 +134,7 @@ class LoadingActivity(): Activity() {
         val msg = message as LoadingMessage
         if(msg.msgType == LoadingMessage.Type.CONNECTFAILED){
             binding!!.prompt = "connectFailed"
-            //binding!!.ballClipRotatePulseIndicator.hide()
+            binding!!.ballClipRotatePulseIndicator.hide()
         }
     }
 
@@ -158,14 +159,6 @@ class LoadingActivity(): Activity() {
         val intentFilter = IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
         intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
         intentFilter.addAction(BluetoothDevice.ACTION_FOUND)
-        this.registerReceiver(mainReceiver, intentFilter)
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            moveTaskToBack(false)
-            return true
-        }
-        return super.onKeyDown(keyCode, event)
+        activity.registerReceiver(mainReceiver, intentFilter)
     }
 }

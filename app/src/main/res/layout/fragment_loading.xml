@@ -6,10 +6,6 @@
         <variable
             name="prompt"
             type="String"/>
-        <variable
-            name="style"
-            type="String"/>
-
     </data>
 
     <LinearLayout
@@ -26,7 +22,7 @@
             android:layout_height="wrap_content">
 
             <com.wang.avi.AVLoadingIndicatorView
-                android:id="@+id/ball"
+                android:id="@+id/ball_clip_rotate_pulse_indicator"
                 android:layout_width="80sp"
                 android:layout_height="80sp"
                 app:indicatorColor="@android:color/holo_blue_light"
@@ -43,3 +39,4 @@
 
     </LinearLayout>
 </layout>
+
