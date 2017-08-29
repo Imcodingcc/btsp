@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="adapter" type="cn.leither.btsp.CommonAdapter"/>
+        <variable name="knownWifiListAdapter" type="cn.leither.btsp.CommonAdapter"/>
+    </data>
+    <LinearLayout
+        android:weightSum="100"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:textSize="20sp"
+            android:text="known"/>
+
+        <ListView
+            android:id="@+id/knownWifiListView"
+            android:layout_weight="25"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:adapter="@{knownWifiListAdapter}"/>
+
+        <TextView
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:textSize="20sp"
+            android:text="wifi list"/>
+
+        <ListView
+            android:id="@+id/wifiListView"
+            android:layout_weight="65"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:adapter="@{adapter}"/>
+    </LinearLayout>
+</layout>
+
