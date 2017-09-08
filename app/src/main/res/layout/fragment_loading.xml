@@ -9,8 +9,8 @@
     </data>
 
     <LinearLayout
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -26,13 +26,15 @@
                 android:layout_width="80sp"
                 android:layout_height="80sp"
                 app:indicatorColor="@android:color/holo_blue_light"
-                app:indicatorName="BallScaleMultipleIndicator"/>
+                app:indicatorName="CubeTransitionIndicator"/>
 
             <TextView
+                android:id="@+id/text_prompt"
                 android:layout_width="wrap_content"
                 android:layout_height="30sp"
                 android:gravity="center"
-                android:textSize="20sp"
+                android:textSize="15sp"
+                android:textColor="@android:color/black"
                 android:text="@{prompt}"/>
 
         </LinearLayout>

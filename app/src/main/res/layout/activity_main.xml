@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
-        <variable name="adapter" type="cn.leither.btsp.CommonAdapter"/>
-        <variable name="knownWifiListAdapter" type="cn.leither.btsp.CommonAdapter"/>
+        <variable name="adapter" type="cn.leither.btsp.adapter.CommonAdapter"/>
+        <variable name="knownWifiListAdapter" type="cn.leither.btsp.adapter.CommonAdapter"/>
     </data>
     <LinearLayout
         android:weightSum="100"

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="connected_wifi_list_adapter" type="cn.leither.btsp.adapter.CommonAdapter"/>
+        <variable name="near_wifi_list_adapter" type="cn.leither.btsp.adapter.CommonAdapter"/>
+    </data>
+    <LinearLayout
+        android:background="@color/gray"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/choose_wifi_title"
+            android:text="无线局域网"
+            android:textSize="20sp"
+            android:background="@drawable/cut_off_rule"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="50sp" />
+
+        <cn.leither.btsp.view.BounceScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_marginLeft="35sp"
+                        android:text="已连接网络"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="30sp" />
+                    <cn.leither.btsp.view.MyListView
+                        android:id="@+id/connected_wifi_list"
+                        android:background="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10sp"
+                        android:layoutAnimation="@anim/anim_listview_item"
+                        app:adapter="@{connected_wifi_list_adapter}" >
+
+                    </cn.leither.btsp.view.MyListView>
+                    <LinearLayout
+                        android:layout_marginTop="10sp"
+                        android:weightSum="100"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="5sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:gravity="center"
+                            android:layout_weight="30"
+                            android:paddingLeft="16sp"
+                            android:paddingRight="0sp"
+                            android:text="选取网络..."
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+                        <com.wang.avi.AVLoadingIndicatorView
+                            android:id="@+id/choose_wifi_search"
+                            android:layout_width="20sp"
+                            android:layout_height="20sp"
+                            app:indicatorColor="@android:color/holo_blue_light"
+                            app:indicatorName="LineSpinFadeLoaderIndicator"/>
+
+                    </LinearLayout>
+                    <cn.leither.btsp.view.MyListView
+                        android:listSelector="@android:color/transparent"
+                        android:id="@+id/near_wifi_list"
+                        android:background="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layoutAnimation="@anim/anim_listview_item"
+                        app:adapter="@{near_wifi_list_adapter}">
+                    </cn.leither.btsp.view.MyListView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </cn.leither.btsp.view.BounceScrollView>
+
+    </LinearLayout>
+</layout>

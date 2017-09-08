@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="ssid"
+            type="String" />
+    </data>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/wifi_detail_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="Xiaomi_E6E1"
+                android:background="@drawable/cut_off_rule"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+            <LinearLayout
+                android:background="@android:color/white"
+                android:weightSum="100"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="30dp">
+                <TextView
+                    android:layout_weight="10"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_weight="35"
+                    android:paddingRight="10dp"
+                    android:text="IP地址:"
+                    android:layout_gravity="left"
+                    android:gravity="center|right"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+                <TextView
+                    android:layout_weight="45"
+                    android:layout_gravity="center"
+                    android:text="192.168.1.51"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:background="@android:color/white"
+                android:weightSum="100"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="30dp">
+                <TextView
+                    android:layout_weight="10"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_weight="35"
+                    android:paddingRight="10dp"
+                    android:text="Mac值:"
+                    android:layout_gravity="left"
+                    android:gravity="center|right"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+                <TextView
+                    android:layout_weight="45"
+                    android:layout_gravity="center"
+                    android:text="DD:CC:AA:74:D2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:background="@android:color/white"
+                android:weightSum="100"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="30dp">
+                <TextView
+                    android:layout_weight="10"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_weight="35"
+                    android:paddingRight="10dp"
+                    android:text="网关IP:"
+                    android:layout_gravity="left"
+                    android:gravity="center|right"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+                <TextView
+                    android:layout_weight="45"
+                    android:layout_gravity="center"
+                    android:text="192.168.1.1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:background="@drawable/cut_off_rule"
+                android:weightSum="100"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="30dp">
+                <TextView
+                    android:layout_weight="10"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_weight="35"
+                    android:paddingRight="10dp"
+                    android:text="Interfa:"
+                    android:layout_gravity="left"
+                    android:gravity="center|right"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+                <TextView
+                    android:layout_weight="45"
+                    android:layout_gravity="center"
+                    android:text="Wlan0"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:background="@android:color/white"
+            android:weightSum="100"
+            android:layout_width="300dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/wifi_detail_disconnect"
+                android:background="@android:color/white"
+                android:layout_weight="50"
+                android:text="断开连接"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+            <Button
+                android:background="@android:color/white"
+                android:layout_weight="50"
+                android:text="忽略并断开"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

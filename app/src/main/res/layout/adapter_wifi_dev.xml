@@ -3,7 +3,7 @@
     <data>
             <variable
                 name="wi"
-                type="cn.leither.btsp.Wi"/>
+                type="cn.leither.btsp.entity.Wi"/>
     </data>
     <LinearLayout
         android:orientation="vertical" android:layout_width="match_parent"

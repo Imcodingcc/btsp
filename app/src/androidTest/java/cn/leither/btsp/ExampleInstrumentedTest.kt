@@ -3,6 +3,7 @@ package cn.leither.btsp
 import android.support.test.InstrumentationRegistry
 import android.support.test.filters.SmallTest
 import android.support.test.runner.AndroidJUnit4
+import cn.leither.btsp.command.GetDevCommand
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,7 +26,7 @@ class ExampleInstrumentedTest {
         val buffer = ByteArray(1024)
         val input = ByteArrayInputStream(buffer)
         val output = ByteArrayOutputStream()
-        val wi = WiCommand(input, output)
+        val wi = GetDevCommand(input, output)
         wi.send()
         //assertEquals("cn.leither.btsp", appContext.packageName)
     }

@@ -1,40 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
             <variable
                 name="know"
-                type="cn.leither.btsp.KnownWifi"/>
+                type="cn.leither.btsp.entity.KnownWifi"/>
     </data>
     <LinearLayout
-        android:orientation="horizontal" android:layout_width="match_parent"
+        android:paddingRight="20sp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:weightSum="100"
-        android:layout_height="match_parent">
+        android:gravity="center"
+        android:layout_height="40sp">
         <LinearLayout
+            android:layout_gravity="center"
+            android:gravity="center"
             android:layout_weight="50"
             android:layout_width="0dp"
             android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/loading_or_connected"
+                android:gravity="center"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/right"/>
+            </LinearLayout>
             <TextView
-                android:textSize="30sp"
+                android:gravity="center_vertical"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@{know.name}"/>
+                android:text="@{know.showName}"/>
         </LinearLayout>
         <LinearLayout
-            android:layout_weight="25"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="30"
             android:layout_width="0dp"
             android:layout_height="match_parent">
             <TextView
-                android:textSize="30sp"
+                android:textSize="20sp"
+                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@{know.state}"/>
+                android:text="@{know.showState}"/>
         </LinearLayout>
         <LinearLayout
-            android:layout_weight="25"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="20"
             android:layout_width="0dp"
             android:layout_height="match_parent">
             <TextView
-                android:textSize="30sp"
+                android:textSize="15sp"
+                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@{know.lock}"/>

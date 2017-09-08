@@ -1,5 +1,6 @@
 package cn.leither.btsp
 
+import cn.leither.btsp.command.GetDevCommand
 import org.json.JSONObject
 import org.junit.Test
 
@@ -18,7 +19,7 @@ class ExampleUnitTest {
         val buffer = ByteArray(1024)
         val input = ByteArrayInputStream(buffer)
         val output = ByteArrayOutputStream()
-        val wi = WiCommand(input, output)
+        val wi = GetDevCommand(input, output)
         wi.send()
         val expect = JSONObject("{'cmd': 'getWifiInterface'}")
         assertEquals(expect, output.toByteArray())
