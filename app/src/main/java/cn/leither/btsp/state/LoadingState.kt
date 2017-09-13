@@ -11,9 +11,6 @@ import java.io.Serializable
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.CopyOnWriteArraySet
 
-/**
- * Created by lvqiang on 17-8-28.
- */
 class LoadingState(var stage : Stage = Stage.INIT, val activity: LoadingFragment): Serializable, State {
     lateinit var ba: BluetoothAdapter
     lateinit var devices: CopyOnWriteArraySet<BluetoothDevice>
@@ -35,10 +32,8 @@ class LoadingState(var stage : Stage = Stage.INIT, val activity: LoadingFragment
 
     fun toStage(stage: Stage, next: (new: LoadingState)-> Unit) {
         val old = this.stage
-        val new = stage
-        Log.d("BTSP", String.format("state change: %s -> %s", old, new))
-        this.stage = new
+        Log.d("BTSP", String.format("state change: %s -> %s", old, stage))
+        this.stage = stage
         next(this)
     }
-
 }

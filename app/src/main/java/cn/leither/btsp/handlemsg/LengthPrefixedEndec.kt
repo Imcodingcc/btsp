@@ -1,10 +1,12 @@
 package cn.leither.btsp.handlemsg
 
+import cn.leither.btsp.utile.SocketInputStream
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.*
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
+import java.util.*
 
 
 /**
@@ -53,30 +55,31 @@ class JSONLengthPrefixedDecoder: Decoder<JSONObject> {
         }
     }
 
+    fun decodeFromWithTimeout(input: SocketInputStream, timeout:Long): JSONObject? {
+        input.deadline = Date(Date().time + timeout)
+        return decodeFrom(input)
+    }
+
     override fun decodeFrom(input: InputStream): JSONObject? {
-        return try {
-            val head = ByteArray(2)
-            val len:Int
-            var n = input.read(head, 0, 2)
-            while (n < 2) {
-                val s = input.read(head, n, 2 - n)
-                n += s
-            }
-
-            val bb = ByteBuffer.wrap(head)
-            len = bb.short.toInt()
-
-            val tail = ByteArray(len)
-
-            var m = input.read(tail, 0, len)
-            while (m != len) {
-                val s = input.read(tail, m, len-m)
-                m += s
-            }
-            decode(head+tail)
-        } catch (e: IOException) {
-            null
+        val head = ByteArray(2)
+        val len:Int
+        var n = input.read(head, 0, 2)
+        while (n < 2) {
+            val s = input.read(head, n, 2 - n)
+            n += s
         }
+
+        val bb = ByteBuffer.wrap(head)
+        len = bb.short.toInt()
+
+        val tail = ByteArray(len)
+
+        var m = input.read(tail, 0, len)
+        while (m != len) {
+            val s = input.read(tail, m, len-m)
+            m += s
+        }
+        return decode(head+tail)
     }
 }
 

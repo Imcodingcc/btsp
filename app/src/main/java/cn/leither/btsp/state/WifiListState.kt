@@ -17,10 +17,7 @@ import java.util.concurrent.CopyOnWriteArraySet
  * Created by lvqiang on 17-8-28.
  */
 class WifiListState(var stage : Stage = Stage.INIT, val activity: WifiListFragment): Serializable, State {
-    lateinit var ba: BluetoothAdapter
-    lateinit var devices: CopyOnWriteArraySet<BluetoothDevice>
-    var sockets: MutableList<BluetoothSocket> = CopyOnWriteArrayList<BluetoothSocket>()
-    lateinit var connectedSocket: BluetoothSocket
+    lateinit var device: BluetoothDevice
     lateinit var scanWifiListTask: ScanWifiListTask
     lateinit var cwl: List<KnownWifi>
     lateinit var kwl: List<KnownWifi>
@@ -51,6 +48,9 @@ class WifiListState(var stage : Stage = Stage.INIT, val activity: WifiListFragme
         CREATE_WIFI_CONNECTION("CREATE_WIFI_CONNECTION"),
         CREATED_WIFI_CONNECTION("CREATED_WIFI_CONNECTION"),
         CREATE_WIFI_FAILED("CREATE_WIFI_FAILED"),
+        DELETE_WIFI_CONNECTION("DELETE_WIFI_CONNECTION"),
+        DELETE_WIFI_CONNECTION_DONE("DELETE_WIFI_CONNECTION_DONE"),
+        DELETE_WIFI_CONNECTION_FAILED("DELETE_WIFI_CONNECTION_FAILED"),
         DISCONNECTING("DISCONNECTING"),
         DISCONNECTED("DISCONNECTED"),
         DISCONNECT_FAILED("DISCONNECT_FAILED"),
@@ -59,17 +59,15 @@ class WifiListState(var stage : Stage = Stage.INIT, val activity: WifiListFragme
 
     fun toStage(stage: Stage, next: (new: WifiListState)-> Unit) {
         val old = this.stage
-        val new = stage
-        Log.d("BTSP", String.format("state change: %s -> %s", old, new))
-        this.stage = new
+        Log.d("BTSP", String.format("state change: %s -> %s", old, stage))
+        this.stage = stage
         next(this)
     }
 
     fun toStage(stage: Stage, next: (new: WifiListState, param:Any?)-> Unit, param: Any?) {
         val old = this.stage
-        val new = stage
-        Log.d("BTSP", String.format("state change: %s -> %s", old, new))
-        this.stage = new
+        Log.d("BTSP", String.format("state change: %s -> %s", old, stage))
+        this.stage = stage
         next(this, param)
     }
 

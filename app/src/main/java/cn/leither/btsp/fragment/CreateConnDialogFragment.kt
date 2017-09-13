@@ -7,8 +7,6 @@ import android.databinding.ViewDataBinding
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
-import android.util.Log
-import android.view.FocusFinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,14 +21,10 @@ import com.wang.avi.AVLoadingIndicatorView
 import kotlinx.android.synthetic.main.adapter_wifi_list.view.*
 
 @SuppressLint("ValidFragment")
-/**
- * Created by lvqiang on 17-8-25.
- */
 class CreateConnDialogFragment @SuppressLint("ValidFragment") constructor
-(val state: WifiListState, val ssid: String, val uuid: MutableList<String>, val item_binding: ViewDataBinding) : DialogFragment(){
+(val state: WifiListState, private val ssid: String, private val item_binding: ViewDataBinding) : DialogFragment(){
     var binding:WeightEnterPasswordBinding? = null
-    var isKnown: Boolean = false
-
+    private var isKnown: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val style = STYLE_NO_TITLE
@@ -42,7 +36,7 @@ class CreateConnDialogFragment @SuppressLint("ValidFragment") constructor
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.weight_enter_password, container , false)
         binding!!.wepDevList.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_single_choice, state.devl)
-        binding!!.wepDevList.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
+        binding!!.wepDevList.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
             if(state.kwl.any { e ->  ssid + "@" + state.devl[i] == e.name }){
                 binding!!.ePassword.visibility = View.GONE
                 isKnown = true
@@ -51,8 +45,7 @@ class CreateConnDialogFragment @SuppressLint("ValidFragment") constructor
                 isKnown = false
             }
         }
-        binding!!.surePassword.setOnClickListener(View.OnClickListener { view ->
-            //binding!!.ePassword.focusable= View.NOT_FOCUSABLE
+        binding!!.surePassword.setOnClickListener({
             dismiss()
             item_binding.root.will_connect_loading.removeAllViews()
             val params = LinearLayout.LayoutParams(60, 60)
@@ -62,7 +55,7 @@ class CreateConnDialogFragment @SuppressLint("ValidFragment") constructor
             item_binding.root.will_connect_loading.addView(al)
             val position = binding!!.wepDevList.checkedItemPosition
             if(ListView.INVALID_POSITION != position){
-                val map: MutableMap<String, String> = HashMap<String, String>()
+                val map: MutableMap<String, String> = HashMap()
                 al.smoothToShow()
                 map["iface"] = state.devl[position]
                 val groupName= ssid + "@" + state.devl[position]

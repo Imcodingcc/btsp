@@ -1,14 +1,11 @@
 package cn.leither.btsp.command
 
-import cn.leither.btsp.command.CommonCommand
+import android.bluetooth.BluetoothSocket
 import org.json.JSONObject
 import java.io.InputStream
 import java.io.OutputStream
 
-/**
- * Created by lvqiang on 17-8-24.
- */
-class GetWifiConnection(input: InputStream, output: OutputStream) : CommonCommand(input, output) {
+class GetWifiConnection(socket: BluetoothSocket) : CommonCommand(socket) {
     override fun request(): JSONObject {
         return JSONObject("{'request': 'getWifiConnection'}")}
 }

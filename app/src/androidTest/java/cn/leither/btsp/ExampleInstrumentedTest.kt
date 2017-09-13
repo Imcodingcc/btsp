@@ -26,8 +26,8 @@ class ExampleInstrumentedTest {
         val buffer = ByteArray(1024)
         val input = ByteArrayInputStream(buffer)
         val output = ByteArrayOutputStream()
-        val wi = GetDevCommand(input, output)
-        wi.send()
+        //val wi = GetDevCommand()
+        //wi.send()
         //assertEquals("cn.leither.btsp", appContext.packageName)
     }
 }

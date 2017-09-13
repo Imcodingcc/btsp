@@ -8,47 +8,47 @@ import cn.leither.btsp.handlemsg.WifiListMessage
 import cn.leither.btsp.command.ScanCommand
 import cn.leither.btsp.entity.SsId
 import cn.leither.btsp.state.WifiListState
+import cn.leither.btsp.utile.Const
 import org.json.JSONObject
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.*
 
-/**
- * Created by lvqiang on 17-8-30.
- */
 class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Boolean>(){
-    var input: InputStream? = null
-    var output: OutputStream? = null
-    var param: MutableMap<*, *>? = null
-    var nextAction: WifiListState.Stage = WifiListState.Stage.DEFAULT
+    private var param: MutableMap<*, *>? = null
+    private var nextAction: WifiListState.Stage = WifiListState.Stage.DEFAULT
     private val ee = EventEmitter.default
-    init {
-        input = state.sockets[0].inputStream
-        output = state.sockets[0].outputStream
-    }
     override fun doInBackground(vararg p0: Unit?): Boolean? {
-        val sc = ScanCommand(input!!, output!!)
+        val timer = Timer()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                try {
+                    val socket = state.device.createInsecureRfcommSocketToServiceRecord(Const.uuid)
+                    socket.connect()
+                    val sc = ScanCommand(socket)
+                    sc.send()
+                    publishProgress(null)
+                    val re = sc.recv()
+                    Log.d("BTSP", "SCAN_RESULT" + re.toString())
+                    if(re != null){
+                        publishProgress(re)
+                    }else{
+                        publishProgress(JSONObject("{'reply': ''}"))
+                    }
+                }catch (e: InterruptedException){
+                    Log.d("BTSP", "SCAN_RESULT cancelling")
+                }catch (e: IOException) {
+                    Log.d("BTSP", "SCAN_RESULT IO error" + e.localizedMessage)
+                }
+
+            }
+        }, 100, 10000)
         while(true){
             if(isCancelled){
+                timer.cancel()
+                Log.d("BTSP", "isCancelled")
                 return isCancelled
-            }
-            try {
-                state.connectedSocket.connect()
-                sc.send()
-                publishProgress(null)
-                val re = sc.recv()
-                Log.d("BTSP", "SCAN_RESULT" + re.toString())
-                if(re != null){
-                    publishProgress(re)
-                    Thread.sleep(10000)
-                }else{
-                    publishProgress(JSONObject("{'reply': ''}"))
-                    Thread.sleep(10000)
-                }
-            }catch (e: Exception){
-                publishProgress(null)
-                Log.d("BTSP", "connect failed")
-                Thread.sleep(3000)
-
             }
         }
     }
@@ -94,6 +94,7 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
 
     override fun onCancelled() {
         super.onCancelled()
+        Log.d("BTSP", "nextAction" + nextAction.toString())
         when(nextAction){
             WifiListState.Stage.DISCONNECT_WIFI ->{
                 state.toStage(nextAction, state.activity::toDisConnectWifi, param)
@@ -102,17 +103,17 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
                 state.toStage(nextAction, state.activity::toActivateWifi, param)
             }
             WifiListState.Stage.CREATED_WIFI_CONNECTION ->{
-                var map:MutableMap<String, String> = HashMap()
                 state.toStage(nextAction, state.activity::toCreateWifiConn, param)
             }
+            else -> TODO()
         }
     }
 
     private fun transWl(data: JSONObject): List<SsId>{
         val ja = data.getJSONObject("reply")
-        var list: ObservableArrayList<SsId> = ObservableArrayList()
+        val list: ObservableArrayList<SsId> = ObservableArrayList()
         ja.keys().forEach { e ->
-            val uuid = state.kwl.filter { e2 -> e2.name.split("@")[0] == e }.map { e-> e.uuid}
+            val uuid = state.kwl.filter { e2 -> e2.name.split("@")[0] == e }.map { e3-> e3.uuid}
             list.add(SsId(e, ja.getJSONObject(e).getString("signal"), "加密的", uuid.isNotEmpty(), uuid as MutableList<String>))
         }
         return list.filter { e1->

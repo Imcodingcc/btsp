@@ -4,16 +4,15 @@ import android.bluetooth.BluetoothSocket
 import android.os.AsyncTask
 import android.util.Log
 import cn.leither.btsp.state.LoadingState
+import cn.leither.btsp.utile.Const
 import java.io.IOException
 import java.util.*
 
-/**
- * Created by lvqiang on 17-8-17.
- */
 class ConnectTask(val state: LoadingState): AsyncTask<Unit, BluetoothSocket?, Boolean>(){
-    val uuid = UUID.fromString("3a75d027-49b6-40e7-8c22-e08bf79988d3")
+
     override fun doInBackground(vararg devices: Unit): Boolean {
         return arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0).any {
+            Log.d("BTSP", "CONNECTION RETRY")
             isConnected()
         }
     }
@@ -25,7 +24,7 @@ class ConnectTask(val state: LoadingState): AsyncTask<Unit, BluetoothSocket?, Bo
             val d = it.next()
             val socket: BluetoothSocket
             try {
-                socket = d.createInsecureRfcommSocketToServiceRecord(uuid)
+                socket = d.createInsecureRfcommSocketToServiceRecord(Const.uuid)
                 socket.connect()
                 if(socket.isConnected){
                     state.sockets.add(socket)
@@ -33,9 +32,8 @@ class ConnectTask(val state: LoadingState): AsyncTask<Unit, BluetoothSocket?, Bo
                 }
                 publishProgress(socket)
                 return state.sockets.isNotEmpty()
-                publishProgress(socket)
             } catch (e: IOException) {
-                Thread.sleep(2000)
+                Thread.sleep(100)
             } finally {
             }
         }
@@ -52,4 +50,5 @@ class ConnectTask(val state: LoadingState): AsyncTask<Unit, BluetoothSocket?, Bo
             Log.d("BTSP", String.format("connect failed"))
         }
     }
+
 }

@@ -18,11 +18,8 @@ import com.wang.avi.AVLoadingIndicatorView
 import kotlinx.android.synthetic.main.adapter_know_wifi_list.view.*
 
 @SuppressLint("ValidFragment")
-/**
- * Created by lvqiang on 17-8-25.
- */
 class ConnectedDetailDialogFragment @SuppressLint("ValidFragment") constructor
-(val state: WifiListState, val ssid: String, val iface: String, val item_binding:ViewDataBinding) : DialogFragment(){
+(private val state: WifiListState, private val ssid: String, private val iface: String, private val item_binding:ViewDataBinding) : DialogFragment(){
     var binding: WeightConnectedDetailBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +34,7 @@ class ConnectedDetailDialogFragment @SuppressLint("ValidFragment") constructor
         binding = DataBindingUtil.inflate(inflater, R.layout.weight_connected_detail, container, false)
         binding!!.ssid = ssid
         binding!!.wifiDetailName.paint.isFakeBoldText = true
-        binding!!.wifiDetailDisconnect.setOnClickListener(View.OnClickListener {
+        binding!!.wifiDetailDisconnect.setOnClickListener({
             dismiss()
             item_binding.root.loading_or_connected.removeAllViews()
             val params = LinearLayout.LayoutParams(60, 60)

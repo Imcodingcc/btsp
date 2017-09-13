@@ -20,9 +20,6 @@ import cn.leither.btsp.state.LoadingState
 import cn.leither.btsp.task.ConnectTask
 import java.util.concurrent.CopyOnWriteArraySet
 
-/**
- * Created by lvqiang on 17-8-29.
- */
 class LoadingFragment: Fragment(){
     var binding: FragmentLoadingBinding? = null
     private lateinit var state: LoadingState
@@ -34,24 +31,20 @@ class LoadingFragment: Fragment(){
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_loading, container, false)
         binding!!.textPrompt.paint.isFakeBoldText = true
         state = LoadingState(activity = this)
-        state.devices = CopyOnWriteArraySet<BluetoothDevice>()
-        state.toStage(LoadingState.Stage.INIT, this::toInit)
+        state.devices = CopyOnWriteArraySet()
+        state.toStage(stage = LoadingState.Stage.INIT) { toInit(it) }
         return binding!!.root
     }
 
-    fun toInit(old: LoadingState){
+    private fun toInit(old: LoadingState){
         registerReceiver()
         old.ba = BluetoothAdapter.getDefaultAdapter()
-        if(old.ba == null){
-            ee.emit(LoadingMessage(LoadingMessage.Type.INIT, false))
+        if (!old.ba.isEnabled) {
+            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(enableBtIntent, OPEN_BLUETOOTH_SUCCESS)
         }else{
-            if (!old.ba.isEnabled) {
-                val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                startActivityForResult(enableBtIntent, OPEN_BLUETOOTH_SUCCESS)
-            }else{
-                ee.emit(LoadingMessage(LoadingMessage.Type.INIT, true))
-                old.toStage(LoadingState.Stage.SCANNING, this::toScanning)
-            }
+            ee.emit(LoadingMessage(LoadingMessage.Type.INIT, true))
+            old.toStage(LoadingState.Stage.SCANNING, this::toScanning)
         }
     }
 
@@ -68,7 +61,7 @@ class LoadingFragment: Fragment(){
         }
     }
 
-    fun toScanning(old: LoadingState){
+    private fun toScanning(old: LoadingState){
         old.ba.cancelDiscovery()
         old.ba.startDiscovery()
     }
@@ -88,7 +81,7 @@ class LoadingFragment: Fragment(){
         }
     }
 
-    fun toScanDone(old: LoadingState){
+    private fun toScanDone(old: LoadingState){
         ee.emit(LoadingMessage(LoadingMessage.Type.SCANDONE, null))
         old.toStage(LoadingState.Stage.CONNECTING, this::toConnecting)
     }
@@ -101,14 +94,14 @@ class LoadingFragment: Fragment(){
         }
     }
 
-    fun toConnecting(old: LoadingState) {
+    private fun toConnecting(old: LoadingState) {
         ee.emit(LoadingMessage(LoadingMessage.Type.CONNECTING, null))
-        state.connectTask = ConnectTask(state)
+        state.connectTask = ConnectTask(old)
         state.connectTask.execute()
     }
 
     init{ ee.register("LoadingMessage", this::onConnecting) }
-    fun onConnecting(message: EventEmitter.Message){
+    private fun onConnecting(message: EventEmitter.Message){
         val msg = message as LoadingMessage
         if(msg.msgType == LoadingMessage.Type.CONNECTING){
             binding!!.prompt = "正在连接盒子"
@@ -116,21 +109,19 @@ class LoadingFragment: Fragment(){
     }
 
     fun toConnected(old: LoadingState){
-        //TODO toStage
-        val map: MutableMap<String, Any> = HashMap<String, Any>()
+        val map = HashMap<String, Any>()
         map["fragmentID"] = R.id.container
         map["fragment"] = WifiListFragment()
         ee.emit(LoadingMessage(LoadingMessage.Type.CONNECTED, null))
         ee.emit(IntermediateMessage(IntermediateMessage.Type.SWITCH_VIEW, map))
-        ee.emit(WifiListMessage(WifiListMessage.Type.DEFAULT, state))
+        ee.emit(WifiListMessage(WifiListMessage.Type.DEFAULT, old))
     }
 
     init{ ee.register("LoadingMessage", this::onConnected) }
-    fun onConnected(message: EventEmitter.Message){
+    private fun onConnected(message: EventEmitter.Message){
         val msg = message as LoadingMessage
         if(msg.msgType == LoadingMessage.Type.CONNECTED){
             binding!!.prompt = "正在跳转"
-            //binding!!.ballClipRotatePulseIndicator.hide()
         }
     }
 

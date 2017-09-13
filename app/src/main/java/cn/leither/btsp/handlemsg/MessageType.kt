@@ -2,9 +2,6 @@ package cn.leither.btsp.handlemsg
 
 import android.bluetooth.BluetoothDevice
 
-/**
- * Created by lvqiang on 17-8-29.
- */
 class AdapterMessage(val msgType: Type, val value: Any?) : EventEmitter.Message {
     override val type = "AdapterMessage"
 

@@ -3,10 +3,6 @@ package cn.leither.btsp.handlemsg
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-/**
- * Created by lvqiang on 17-8-18.
- */
-
 class EventEmitter{
     val handlers = ConcurrentHashMap<String, HandlerList>()
 
@@ -24,7 +20,7 @@ class EventEmitter{
     }
 
     fun register(type: String, handler: Handler): Boolean {
-        val list = handlers[type] ?: CopyOnWriteArrayList<Handler>()
+        val list = handlers[type] ?: CopyOnWriteArrayList()
         val added = list.addIfAbsent(handler)
         handlers[type] = list
         return added

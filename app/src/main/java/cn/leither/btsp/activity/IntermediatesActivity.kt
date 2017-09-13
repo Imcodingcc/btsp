@@ -27,7 +27,7 @@ class IntermediatesActivity : Activity() {
     init { ee.register("IntermediateMessage", this::onSwitchView) }
     private fun onSwitchView(message: EventEmitter.Message){
         val msg = message as IntermediateMessage
-        val param = msg.value as MutableMap<String, Any>
+        val param = msg.value as MutableMap<*, *>
         val fi = param["fragmentID"] as Int
         val fg = param["fragment"] as Fragment
         val fm = fragmentManager

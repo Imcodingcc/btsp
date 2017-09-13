@@ -9,7 +9,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
 import android.widget.Toast
 import cn.leither.btsp.*
 import cn.leither.btsp.adapter.ConnectedWifiAdapter
@@ -19,19 +18,17 @@ import cn.leither.btsp.databinding.FragmentLoadingBinding
 import cn.leither.btsp.databinding.FragmentWifiListBinding
 import cn.leither.btsp.databinding.WeightChooseWifiListBinding
 import cn.leither.btsp.entity.KnownWifi
-import cn.leither.btsp.entity.SsId
+import cn.leither.btsp.entity.Wi
 import cn.leither.btsp.handlemsg.EventEmitter
 import cn.leither.btsp.handlemsg.WifiListMessage
 import cn.leither.btsp.state.LoadingState
 import cn.leither.btsp.state.WifiListState
 import cn.leither.btsp.task.ScanWifiListTask
+import cn.leither.btsp.utile.CommandHandler
+import cn.leither.btsp.utile.Const
 import org.json.JSONObject
-import java.io.InputStream
-import java.io.OutputStream
+import java.io.IOException
 
-/**
- * Created by lvqiang on 17-8-29.
- */
 class WifiListFragment internal constructor(): Fragment(){
 
     private var binding: FragmentWifiListBinding? = null
@@ -39,12 +36,8 @@ class WifiListFragment internal constructor(): Fragment(){
     private var loading_binding: FragmentLoadingBinding? = null
     private var state: WifiListState = WifiListState(activity = this)
     private val ee = EventEmitter.default
-    var input: InputStream? = null
-    var output: OutputStream? = null
-    var wifiListAdapter: WifiListAdapter<SsId>? =null
+    private var wifiListAdapter: WifiListAdapter? =null
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        input = state.sockets[0].inputStream
-        output = state.sockets[0].outputStream
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_wifi_list, container, false)
         choose_wifi_binding = DataBindingUtil.inflate(inflater, R.layout.weight_choose_wifi_list, container, false)
         loading_binding = DataBindingUtil.inflate(inflater, R.layout.fragment_loading, container, false)
@@ -56,11 +49,8 @@ class WifiListFragment internal constructor(): Fragment(){
     private fun onDefault(message: EventEmitter.Message){
         val msg = message as WifiListMessage
         if(msg.msgType == WifiListMessage.Type.DEFAULT){
-            var oldState = message.value as LoadingState
-            state.ba = oldState.ba
-            state.devices = oldState.devices
-            state.sockets = oldState.sockets
-            state.connectedSocket = oldState.connectedSocket
+            val oldState = message.value as LoadingState
+            state.device = oldState.devices.iterator().next()
         }
     }
 
@@ -78,19 +68,19 @@ class WifiListFragment internal constructor(): Fragment(){
 
     private fun toScanningDev(old: WifiListState){
         ee.emit(WifiListMessage(WifiListMessage.Type.SCANNING_DEV, null))
-        val gd = GetDevCommand(input!!, output!!)
-        gd.send()
-        val re = gd.recv()
-        if(re != null){
-            val devl:MutableList<String> = ObservableArrayList()
-            val json = JSONObject(re.toString())
-            val devs = json.getJSONObject("reply")
-            devs.keys().forEach { e->
-                devl.add(e)
+        Thread{
+            val receive = CommandHandler.handleCommand("GET_WIFI_DEV", state.device)
+            if(receive == null){
+                activity.runOnUiThread {
+                    old.toStage(WifiListState.Stage.SCANNING_DEV, this::toScanningDev)
+                }
+            }else{
+                saveDeviceList(receive)
+                activity.runOnUiThread {
+                    old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected)
+                }
             }
-            state.devl = devl
-        }
-        old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected, WifiListState.Stage.SCANNING_DEV)
+        }.start()
     }
 
     init { ee.register("WifiListMessage", this::onScanningDev) }
@@ -105,32 +95,18 @@ class WifiListFragment internal constructor(): Fragment(){
         }
     }
 
-    private fun toScanningConnected(old: WifiListState, param: Any?){
+    private fun toScanningConnected(old: WifiListState){
+        ee.emit(WifiListMessage(WifiListMessage.Type.SCANNING_CONNECTED, null))
         Thread{
-            try {
-                old.connectedSocket.connect()
+            val receive = CommandHandler.handleCommand("GET_WIFI_CONNECTION", state.device)
+            if(receive == null){
                 activity.runOnUiThread {
-                    ee.emit(WifiListMessage(WifiListMessage.Type.SCANNING_CONNECTED, null))
+                    old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected)
                 }
-                val gw = GetWifiConnection(input!!, output!!)
-                gw.send()
-                val re = gw.recv()
-                if(re != null){
-                    old.cwl = transKw(re)
-                    Log.d("BTSP", "cwl" + re.toString())
-                    activity.runOnUiThread {
-                        old.toStage(WifiListState.Stage.SCAN_CONNECTED_DONE, this::toScanConnectedDone)
-                    }
-                }else{
-                    activity.runOnUiThread {
-                        old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected, WifiListState.Stage.SCANNING_CONNECTED)
-                    }
-                }
-            }catch (e: Exception){
-                Log.d("BTSP", "scan catch" + e.message)
-                Thread.sleep(3000)
+            }else{
+                old.cwl = transKw(receive)
                 activity.runOnUiThread {
-                    old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected, WifiListState.Stage.SCANNING_CONNECTED)
+                    old.toStage(WifiListState.Stage.SCAN_CONNECTED_DONE, this::toScanConnectedDone)
                 }
             }
         }.start()
@@ -158,14 +134,14 @@ class WifiListFragment internal constructor(): Fragment(){
             binding!!.wlContainer.addView(choose_wifi_binding!!.root)
             val cp = choose_wifi_binding!!.chooseWifiTitle.paint
             cp.isFakeBoldText = true
-            val knownWifiListAdapter: ConnectedWifiAdapter<KnownWifi> = ConnectedWifiAdapter(activity, state.cwl, R.layout.adapter_know_wifi_list, BR.know)
+            val knownWifiListAdapter = ConnectedWifiAdapter(activity, state.cwl, R.layout.adapter_know_wifi_list, BR.know)
             knownWifiListAdapter.state = state
             choose_wifi_binding!!.connectedWifiListAdapter = knownWifiListAdapter
         }
     }
 
     private fun toScanningWifiList(old: WifiListState){
-        state.scanWifiListTask = ScanWifiListTask(state)
+        state.scanWifiListTask = ScanWifiListTask(old)
         state.scanWifiListTask.execute()
     }
 
@@ -217,119 +193,106 @@ class WifiListFragment internal constructor(): Fragment(){
             choose_wifi_binding!!.chooseWifiSearch.smoothToHide()
             choose_wifi_binding!!.nearWifiList.isClickable = false
             choose_wifi_binding!!.connectedWifiList.isClickable = false
-            Log.d("BTSP", "cancel_scanning")
         }
     }
 
     fun toDisConnectWifi(old: WifiListState, param: Any?){
         Thread{
-            try {
-                old.connectedSocket.connect()
-                val dc = DisConnectWifi(input!!, output!!)
-                dc.iface = JSONObject(param as MutableMap<Any?, Any?>)
-                dc.send()
-                val re = dc.recv()
-                if(re != null){
-                    activity.runOnUiThread {
-                        old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected, WifiListState.Stage.DISCONNECT_WIFI)
-                    }
-                }
-            }catch (e:Exception){
-                Log.d("BTSP", "eeee" + e.message)
-                Thread.sleep(3000)
+            val receive = CommandHandler.handleCommand("DISCONNECT_WIFI", state.device, JSONObject(param as MutableMap<*, *>))
+            if(receive == null){
                 activity.runOnUiThread {
                     old.toStage(WifiListState.Stage.DISCONNECT_WIFI, this::toDisConnectWifi, param)
+                }
+            }else{
+                activity.runOnUiThread {
+                    old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected)
                 }
             }
         }.start()
     }
 
     private fun toScanConnectedFailed(old: WifiListState){
-        Log.d("BTSP", "失败了")
-
+        TODO()
     }
 
     fun onScanningConnectedFailed(message: EventEmitter.Message){
-
+        TODO()
     }
 
     fun toActivateWifi(old: WifiListState, param: Any?){
         Thread{
-            try {
-                old.connectedSocket.connect()
-                val af = ActivateWifiConnection(input!!, output!!)
-                param as MutableMap<String, String>
-                af.iface = JSONObject(param)
-                af.send()
-                val re = af.recv()
-                if(re != null){
-                    activity.runOnUiThread {
-                        old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected, WifiListState.Stage.DISCONNECT_WIFI)
-                    }
-                }
-            }catch (e:Exception){
-                Thread.sleep(3000)
+            val receive = CommandHandler.handleCommand("ACTIVATE_WIFI_CONNECTION", state.device, JSONObject(param as MutableMap<*, *>))
+            if(receive == null){
                 activity.runOnUiThread {
                     old.toStage(WifiListState.Stage.ACTIVATE_WIFI, this::toActivateWifi, param)
                 }
+            }else{
+                activity.runOnUiThread {
+                    old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected)
+                }
             }
-
         }.start()
     }
 
     fun toCreateWifiConn(old: WifiListState, param: Any?){
         Thread{
-            try {
-                old.connectedSocket.connect()
-                val cw = CreateWifiConnection(input!!, output!!)
-                param as MutableMap<String, String>
-                cw.param = JSONObject(param)
-                cw.send()
-                val re = cw.recv()
-                when(connectWifiMsg(re!!)){
+            val receive = CommandHandler.handleCommand("ACTIVATE_WIFI_CONNECTION", state.device, JSONObject(param as MutableMap<*, *>))
+            if(receive == null){
+                activity.runOnUiThread {
+                    old.toStage(WifiListState.Stage.CREATED_WIFI_CONNECTION, this::toCreateWifiConn, param)
+                }
+            }else{
+                when(connectWifiMsg(receive)){
                     "successfully"->
                         activity.runOnUiThread {
                             Toast.makeText(activity, "已连接", Toast.LENGTH_SHORT).show()
-                            old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected, WifiListState.Stage.SCANNING_CONNECTED)
+                            old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected)
                         }
                     "passwordErr"->
-                         activity.runOnUiThread {
-                             Toast.makeText(activity, "密码错误", Toast.LENGTH_SHORT).show()
-                             old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected, WifiListState.Stage.SCANNING_CONNECTED)
-                         }
+                        activity.runOnUiThread {
+                            Toast.makeText(activity, "密码错误", Toast.LENGTH_SHORT).show()
+                            old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected)
+                        }
                     "rangeErr"->
                         activity.runOnUiThread {
                             Toast.makeText(activity, "超出范围", Toast.LENGTH_SHORT).show()
-                            old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected, WifiListState.Stage.SCANNING_CONNECTED)
+                            old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected)
                         }
                     "timeErr"->{
                         Thread.sleep(3000)
                         activity.runOnUiThread {
                             Toast.makeText(activity, "连接超时", Toast.LENGTH_SHORT).show()
-                            old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected, WifiListState.Stage.SCANNING_CONNECTED)
+                            old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected)
                         }
                     }
                     "unknownErr"->
-                            activity.runOnUiThread {
-                                Toast.makeText(activity, "连接失败", Toast.LENGTH_SHORT).show()
-                                old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected, WifiListState.Stage.SCANNING_CONNECTED)
-                            }
-
-                }
-            }catch (e:Exception){
-                Thread.sleep(3000)
-                activity.runOnUiThread {
-                    old.toStage(WifiListState.Stage.CREATED_WIFI_CONNECTION, this::toCreateWifiConn, param)
+                        activity.runOnUiThread {
+                            Toast.makeText(activity, "连接失败", Toast.LENGTH_SHORT).show()
+                            old.toStage(WifiListState.Stage.SCANNING_CONNECTED, this::toScanningConnected)
+                        }
                 }
             }
-
         }.start()
+    }
+
+    fun toDeleteConnection(old: WifiListState, param: Any?){
+        Thread{
+            val receive = CommandHandler.handleCommand("DELETE_WIFI_CONNECTION", state.device, JSONObject(param as MutableMap<*, *>))
+            if(receive == null){
+                activity.runOnUiThread {
+                    old.toStage(WifiListState.Stage.DELETE_WIFI_CONNECTION, this::toScanningConnected)
+                }
+            }else{
+                Log.d("BTSP", "DELETE_SUCCESS")
+            }
+        }.start()
+
     }
 
     private fun transKw(data: JSONObject): MutableList<KnownWifi>{
         val ja = data.getJSONObject("reply")
-        var list: MutableList<KnownWifi> = ObservableArrayList<KnownWifi>()
-        var kwl: MutableList<KnownWifi> = ObservableArrayList<KnownWifi>()
+        val list = ObservableArrayList<KnownWifi>()
+        val kwl: MutableList<KnownWifi> = ObservableArrayList<KnownWifi>()
         ja.keys().forEach { e ->
             val known = KnownWifi(ja.getJSONObject(e).getString("name"), ja.getJSONObject(e).getString("device"), "加密的", e)
             if(ja.getJSONObject(e).getString("device") != "--"){
@@ -342,32 +305,25 @@ class WifiListFragment internal constructor(): Fragment(){
         return list
     }
 
-    private fun connectWifiMsg(re: JSONObject): String{
-        val reply = re.getJSONObject("reply").toString()
-        if(reply.indexOf("successfully", 0, false) != -1){
-            return "successfully"
-        }else if(reply.indexOf("provided", 0, false) != -1){
-            return "passwordErr"
-        }else if(reply.indexOf("No network with", 0, false) != -1){
-            return "rangeErr"
-        }else if(reply.indexOf("Timeout", 0, false) != -1){
-            return "timeErr"
+    private fun saveDeviceList(re: JSONObject){
+        val devl:MutableList<String> = ObservableArrayList()
+        val json = JSONObject(re.toString())
+        val devs = json.getJSONObject("reply")
+        devs.keys().forEach { e->
+            devl.add(e)
         }
-        return "unknownErr"
+        state.devl = devl
     }
 
-    private fun setListViewHeight(listView: ListView){
-        val la = listView.adapter ?: return
-        var totalHeight = 0
-        la.count
-        for(i in 0 until la.count){
-            val listItem = la.getView(i, null, listView)
-            listItem.measure(0, 0)
-            totalHeight += listItem.measuredHeight
+    private fun connectWifiMsg(re: JSONObject): String{
+        val reply = re.getJSONObject("reply").toString()
+        return when {
+            reply.indexOf("successfully", 0, false) != -1 -> "successfully"
+            reply.indexOf("provided", 0, false) != -1 -> "passwordErr"
+            reply.indexOf("No network with", 0, false) != -1 -> "rangeErr"
+            reply.indexOf("Timeout", 0, false) != -1 -> "timeErr"
+            else -> "unknownErr"
         }
-        val params = listView.layoutParams
-        params.height = totalHeight + (listView.dividerHeight * (la.count -1))
-        listView.layoutParams = params
     }
 }
 

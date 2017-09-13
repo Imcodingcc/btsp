@@ -10,14 +10,10 @@ import cn.leither.btsp.handlemsg.AdapterMessage
 import cn.leither.btsp.handlemsg.DeviceMessage
 import cn.leither.btsp.handlemsg.EventEmitter
 
-/**
- * Created by lvqiang on 17-8-17.
- */
-class BtspReceiver (): BroadcastReceiver(){
+class BtspReceiver: BroadcastReceiver(){
 
     override fun onReceive(p0: Context?, p1: Intent?) {
         val ee = EventEmitter.default
-        //extract from p1 to msg
         when(p1?.action){
             BluetoothAdapter.ACTION_DISCOVERY_STARTED -> {
                 ee.emit(AdapterMessage(AdapterMessage.Type.STARTED, null))
@@ -27,7 +23,7 @@ class BtspReceiver (): BroadcastReceiver(){
             }
             BluetoothDevice.ACTION_FOUND -> {
                 val device = p1.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
-                if (device != null) ee.emit(DeviceMessage(DeviceMessage.Type.FOUND, device))
+                ee.emit(DeviceMessage(DeviceMessage.Type.FOUND, device))
             }
         }
     }
