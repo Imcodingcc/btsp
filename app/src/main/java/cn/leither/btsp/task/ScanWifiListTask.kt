@@ -5,15 +5,13 @@ import android.os.AsyncTask
 import android.util.Log
 import cn.leither.btsp.handlemsg.EventEmitter
 import cn.leither.btsp.handlemsg.WifiListMessage
-import cn.leither.btsp.command.ScanCommand
 import cn.leither.btsp.entity.SsId
 import cn.leither.btsp.state.WifiListState
-import cn.leither.btsp.utile.Const
+import cn.leither.btsp.utile.CommandHandler
 import org.json.JSONObject
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Boolean>(){
     private var param: MutableMap<*, *>? = null
@@ -24,17 +22,12 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
         timer.schedule(object : TimerTask() {
             override fun run() {
                 try {
-                    val socket = state.device.createInsecureRfcommSocketToServiceRecord(Const.uuid)
-                    socket.connect()
-                    val sc = ScanCommand(socket)
-                    sc.send()
+                    val receive = CommandHandler.handleCommand("SCAN_WIFI", state.device)
                     publishProgress(null)
-                    val re = sc.recv()
-                    Log.d("BTSP", "SCAN_RESULT" + re.toString())
-                    if(re != null){
-                        publishProgress(re)
-                    }else{
+                    if(receive == null){
                         publishProgress(JSONObject("{'reply': ''}"))
+                    }else{
+                        publishProgress(receive)
                     }
                 }catch (e: InterruptedException){
                     Log.d("BTSP", "SCAN_RESULT cancelling")
@@ -46,8 +39,8 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
         }, 100, 10000)
         while(true){
             if(isCancelled){
-                timer.cancel()
                 Log.d("BTSP", "isCancelled")
+                timer.cancel()
                 return isCancelled
             }
         }
@@ -55,9 +48,11 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
 
     override fun onProgressUpdate(vararg values: JSONObject?) {
         super.onProgressUpdate(*values)
+        if(!isCancelled){
             values.map { v ->
                 if(v!= null){
                     if(v.getString("reply" ) == ""){
+                        state.wl = ArrayList()
                         ee.emit(WifiListMessage(WifiListMessage.Type.SCAN_WIFI_LIST_DISCOVER, null))
                     }else{
                         val wl = transWl(v)
@@ -68,9 +63,10 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
                     ee.emit(WifiListMessage(WifiListMessage.Type.SCANNING_WIFI_LIST, null))
                 }
             }
+        }
     }
 
-    private fun preCancel(myInterruptRunning: Boolean, param: MutableMap<*, *>){
+    private fun preCancel(myInterruptRunning: Boolean, param: MutableMap<*, *>?){
         this.param = param
         this.cancel(myInterruptRunning)
         //TODO wait to test
@@ -87,10 +83,10 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
     }
 
     fun cancelForCreateConnect(myInterruptRunning: Boolean, param: Any?){
+        Log.d("BTSP", "CANCEL FOR CREATE")
         preCancel(myInterruptRunning, param as MutableMap<*, *>)
         this.nextAction = WifiListState.Stage.CREATED_WIFI_CONNECTION
     }
-
 
     override fun onCancelled() {
         super.onCancelled()
@@ -105,7 +101,8 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
             WifiListState.Stage.CREATED_WIFI_CONNECTION ->{
                 state.toStage(nextAction, state.activity::toCreateWifiConn, param)
             }
-            else -> TODO()
+            else -> {//Nothing to do
+            }
         }
     }
 
@@ -116,10 +113,10 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
             val uuid = state.kwl.filter { e2 -> e2.name.split("@")[0] == e }.map { e3-> e3.uuid}
             list.add(SsId(e, ja.getJSONObject(e).getString("signal"), "加密的", uuid.isNotEmpty(), uuid as MutableList<String>))
         }
-        return list.filter { e1->
+        return  list.filter { e1->
             state.cwl.none { e2->
                 e2.name == e1.name
             }
-        }
+        }.sortedByDescending { e->e.signal }
     }
 }

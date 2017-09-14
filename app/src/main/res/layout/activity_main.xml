@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable name="adapter" type="cn.leither.btsp.adapter.CommonAdapter"/>
-        <variable name="knownWifiListAdapter" type="cn.leither.btsp.adapter.CommonAdapter"/>
+        <variable name="connectedWifiAdapter" type="cn.leither.btsp.adapter.CommonAdapter"/>
     </data>
     <LinearLayout
         android:weightSum="100"
@@ -26,7 +26,7 @@
             android:layout_weight="25"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:adapter="@{knownWifiListAdapter}"/>
+            app:adapter="@{connectedWifiAdapter}"/>
 
         <TextView
             android:gravity="center_horizontal"

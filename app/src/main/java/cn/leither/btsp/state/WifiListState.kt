@@ -19,8 +19,8 @@ import java.util.concurrent.CopyOnWriteArraySet
 class WifiListState(var stage : Stage = Stage.INIT, val activity: WifiListFragment): Serializable, State {
     lateinit var device: BluetoothDevice
     lateinit var scanWifiListTask: ScanWifiListTask
-    lateinit var cwl: List<KnownWifi>
-    lateinit var kwl: List<KnownWifi>
+    lateinit var cwl: MutableList<KnownWifi>
+    lateinit var kwl: MutableList<KnownWifi>
     lateinit var wl: List<SsId>
     lateinit var devl: List<String>
 

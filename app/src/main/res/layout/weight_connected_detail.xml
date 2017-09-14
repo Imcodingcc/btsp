@@ -147,7 +147,7 @@
             <Button
                 android:background="@android:color/white"
                 android:layout_weight="50"
-                android:text="忽略并断开"
+                android:text="取消"
                 android:layout_width="0dp"
                 android:gravity="center"
                 android:layout_height="wrap_content" />
