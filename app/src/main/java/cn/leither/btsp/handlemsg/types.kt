@@ -4,5 +4,3 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 typealias Handler = (EventEmitter.Message) -> Unit
 typealias HandlerList = CopyOnWriteArrayList<Handler>
-
-

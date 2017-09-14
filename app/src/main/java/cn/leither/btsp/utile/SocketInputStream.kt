@@ -15,8 +15,8 @@ class SocketInputStream(private val i: InputStream): InputStream() {
         i.close()
     }
 
-    override fun mark(readlimit: Int) {
-        i.mark(readlimit)
+    override fun mark(readLimit: Int) {
+        i.mark(readLimit)
     }
 
     override fun markSupported(): Boolean {
@@ -30,10 +30,10 @@ class SocketInputStream(private val i: InputStream): InputStream() {
             }
             if (available() > 0) {
                 val buffer = ByteArray(1)
-                if(i.read(buffer, 0, 1) < 0 ) {
-                    return -1
+                return if(i.read(buffer, 0, 1) < 0 ) {
+                    -1
                 } else {
-                    return buffer[0].toInt()
+                    buffer[0].toInt()
                 }
             } else {
                 Thread.sleep(50)

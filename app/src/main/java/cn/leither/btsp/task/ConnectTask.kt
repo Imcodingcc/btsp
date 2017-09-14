@@ -6,7 +6,6 @@ import android.util.Log
 import cn.leither.btsp.state.LoadingState
 import cn.leither.btsp.utile.Const
 import java.io.IOException
-import java.util.*
 
 class ConnectTask(val state: LoadingState): AsyncTask<Unit, BluetoothSocket?, Boolean>(){
 

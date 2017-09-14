@@ -69,7 +69,6 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
     private fun preCancel(myInterruptRunning: Boolean, param: MutableMap<*, *>?){
         this.param = param
         this.cancel(myInterruptRunning)
-        //TODO wait to test
     }
 
     fun cancelForDisconnect(myInterruptRunning: Boolean, param: Any?){

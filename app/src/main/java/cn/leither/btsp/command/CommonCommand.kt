@@ -7,8 +7,6 @@ import cn.leither.btsp.handlemsg.JSONLengthPrefixedEncoder
 import cn.leither.btsp.utile.SocketInputStream
 import org.json.JSONObject
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
 
 abstract class CommonCommand(private val socket: BluetoothSocket, private val timeout: Long = 25000){
     private val encoder = JSONLengthPrefixedEncoder()

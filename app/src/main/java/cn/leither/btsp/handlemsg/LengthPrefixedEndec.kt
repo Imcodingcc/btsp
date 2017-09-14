@@ -8,11 +8,6 @@ import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.util.*
 
-
-/**
- * Created by lvqiang on 17-8-18.
- */
-
 interface Encoder<in T> {
     fun encode(v: T): ByteArray
     fun encodeTo(output: OutputStream, v: T): Boolean

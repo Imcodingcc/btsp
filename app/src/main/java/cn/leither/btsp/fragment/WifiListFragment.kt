@@ -200,11 +200,9 @@ class WifiListFragment internal constructor(): Fragment(){
         val msg = message as WifiListMessage
         if(msg.msgType == WifiListMessage.Type.CANCEL_SCAN_WIFI_FOR_CONNECTION){
             val value = msg.value as MutableMap<*, *>
-            val ifname = (value["name"] as String).split("@")[1]
             state.cwl.add(KnownWifi(value["name"] as String, "--", "", ""))
             connectedWifiAdapter!!.setItems(state.cwl)
             connectedWifiAdapter!!.notifyDataSetChanged()
-            //val willConnectItem = connectedWifiAdapter!!.bindingMap[value["name"]]!!.root.loading_or_connected
         }
     }
 

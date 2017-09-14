@@ -2,7 +2,6 @@ package cn.leither.btsp.fragment
 
 import android.annotation.SuppressLint
 import android.app.DialogFragment
-import android.content.DialogInterface
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Build
@@ -14,13 +13,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.LinearLayout
 import android.widget.ListView
 import cn.leither.btsp.R
 import cn.leither.btsp.databinding.WeightEnterPasswordBinding
 import cn.leither.btsp.state.WifiListState
-import com.wang.avi.AVLoadingIndicatorView
-import kotlinx.android.synthetic.main.adapter_wifi_list.view.*
 
 @SuppressLint("ValidFragment")
 class CreateConnDialogFragment @SuppressLint("ValidFragment") constructor

@@ -9,7 +9,7 @@ import java.io.IOException
 
 class CommandHandler {
     companion object {
-        fun getCommand(command: String, socket: BluetoothSocket): CommonCommand? {
+        private fun getCommand(command: String, socket: BluetoothSocket): CommonCommand? {
             return when (command) {
                 "ACTIVATE_WIFI_CONNECTION" -> ActivateWifiConnection(socket)
                 "DELETE_WIFI_CONNECTION" -> DeleteWIfiConnection(socket)
@@ -43,7 +43,6 @@ class CommandHandler {
             }
         }
 
-
         fun handleCommand(commandStr: String, device: BluetoothDevice, param: JSONObject): JSONObject? {
             synchronized(device){
                 try {
@@ -53,7 +52,7 @@ class CommandHandler {
                         if (socket.isConnected) {
                             val command = getCommand(commandStr, socket)
                             command!!.param = param
-                            command!!.send()
+                            command.send()
                             val receive = command.recv()
                             if (receive != null) {
                                 return receive
