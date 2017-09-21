@@ -9,34 +9,33 @@
     </data>
 
     <LinearLayout
-        android:gravity="center"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:paddingTop="120dp"
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <com.wang.avi.AVLoadingIndicatorView
-                android:id="@+id/ball_clip_rotate_pulse_indicator"
-                android:layout_width="80sp"
-                android:layout_height="80sp"
-                app:indicatorColor="@android:color/holo_blue_light"
-                app:indicatorName="CubeTransitionIndicator"/>
+            <ImageView
+                android:id="@+id/loading_logo"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/logo"/>
 
             <TextView
+                android:layout_marginTop="20dp"
                 android:id="@+id/text_prompt"
                 android:layout_width="wrap_content"
                 android:layout_height="30sp"
                 android:gravity="center"
                 android:textSize="15sp"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/darker_gray"
                 android:text="@{prompt}"/>
-
         </LinearLayout>
 
     </LinearLayout>

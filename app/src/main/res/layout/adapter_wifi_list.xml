@@ -43,26 +43,11 @@
             android:layout_weight="30"
             android:layout_width="0dp"
             android:layout_height="match_parent">
-            <TextView
-                android:textSize="20sp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@{ssid.signal}"/>
-        </LinearLayout>
-        <LinearLayout
-            android:background="@drawable/cut_off_rule"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_weight="20"
-            android:layout_width="0dp"
-            android:layout_height="match_parent">
-            <TextView
-                android:textSize="15sp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@{ssid.lock}"/>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@{ssid.showIcon}"
+                />
         </LinearLayout>
     </LinearLayout>
 </layout>

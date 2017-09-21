@@ -1,5 +1,6 @@
 package cn.leither.btsp.fragment
 
+import android.animation.ValueAnimator
 import android.app.Fragment
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -18,6 +19,7 @@ import cn.leither.btsp.handlemsg.*
 import cn.leither.btsp.receiver.BtspReceiver
 import cn.leither.btsp.state.LoadingState
 import cn.leither.btsp.task.ConnectTask
+import cn.leither.btsp.view.Animators
 import java.util.concurrent.CopyOnWriteArraySet
 
 class LoadingFragment: Fragment(){
@@ -26,10 +28,10 @@ class LoadingFragment: Fragment(){
     private val OPEN_BLUETOOTH_SUCCESS: Int = 1
     private val ee = EventEmitter.default
     private var mainReceiver: BtspReceiver? = null
+    private var mAnimator:ValueAnimator? = null
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mainReceiver = BtspReceiver()
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_loading, container, false)
-        binding!!.textPrompt.paint.isFakeBoldText = true
         state = LoadingState(activity = this)
         state.devices = CopyOnWriteArraySet()
         state.toStage(stage = LoadingState.Stage.INIT) { toInit(it) }
@@ -56,8 +58,10 @@ class LoadingFragment: Fragment(){
             Toast.makeText(activity, prompt, Toast.LENGTH_SHORT).show()
             binding!!.prompt = prompt
         }else if(msg.msgType == LoadingMessage.Type.INIT && msg.value as Boolean){
-            binding!!.ballClipRotatePulseIndicator.smoothToHide()
+            //binding!!.ballClipRotatePulseIndicator.smoothToHide()
             binding!!.prompt = ""
+            mAnimator = Animators.scaleValueAnimator(binding!!.loadingLogo)
+            mAnimator!!.start()
         }
     }
 
@@ -72,7 +76,7 @@ class LoadingFragment: Fragment(){
         val msg = message as AdapterMessage
         when(msg.msgType){
             AdapterMessage.Type.STARTED -> {
-                binding!!.ballClipRotatePulseIndicator.smoothToShow()
+                //binding!!.ballClipRotatePulseIndicator.smoothToShow()
                 binding!!.prompt = "正在扫描盒子"
             }
             AdapterMessage.Type.STOPPED -> {
@@ -121,7 +125,7 @@ class LoadingFragment: Fragment(){
     private fun onConnected(message: EventEmitter.Message){
         val msg = message as LoadingMessage
         if(msg.msgType == LoadingMessage.Type.CONNECTED){
-            binding!!.prompt = "正在跳转"
+            //binding!!.prompt = "正在跳转"
         }
     }
 
@@ -135,7 +139,10 @@ class LoadingFragment: Fragment(){
         val msg = message as LoadingMessage
         if(msg.msgType == LoadingMessage.Type.CONNECTFAILED){
             binding!!.prompt = "连接失败了"
-            binding!!.ballClipRotatePulseIndicator.hide()
+            mAnimator!!.end()
+            mAnimator!!.removeAllListeners()
+            binding!!.loadingLogo.scaleX = 1f
+            binding!!.loadingLogo.scaleY = 1f
         }
     }
 

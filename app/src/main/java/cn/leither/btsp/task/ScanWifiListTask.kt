@@ -2,6 +2,8 @@ package cn.leither.btsp.task
 
 import android.databinding.ObservableArrayList
 import android.os.AsyncTask
+import android.os.Build
+import android.support.annotation.RequiresApi
 import android.util.Log
 import cn.leither.btsp.handlemsg.EventEmitter
 import cn.leither.btsp.handlemsg.WifiListMessage
@@ -46,6 +48,7 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onProgressUpdate(vararg values: JSONObject?) {
         super.onProgressUpdate(*values)
         if(!isCancelled){
@@ -105,12 +108,17 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun transWl(data: JSONObject): List<SsId>{
         val ja = data.getJSONObject("reply")
+        Log.d("REPLY", ja.toString())
         val list: ObservableArrayList<SsId> = ObservableArrayList()
         ja.keys().forEach { e ->
             val uuid = state.kwl.filter { e2 -> e2.name.split("@")[0] == e }.map { e3-> e3.uuid}
-            list.add(SsId(e, ja.getJSONObject(e).getString("signal"), "加密的", uuid.isNotEmpty(), uuid as MutableList<String>))
+            list.add(SsId(state.activity.activity.applicationContext, e,
+                    ja.getJSONObject(e).getString("signal").toInt(),
+                    ja.getJSONObject(e).getString("encryption"),
+                    uuid.isNotEmpty(), uuid as MutableList<String>))
         }
         return  list.filter { e1->
             state.cwl.none { e2->
