@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
+import android.util.Log
 import cn.leither.btsp.handlemsg.AdapterMessage
 import cn.leither.btsp.handlemsg.DeviceMessage
 import cn.leither.btsp.handlemsg.EventEmitter

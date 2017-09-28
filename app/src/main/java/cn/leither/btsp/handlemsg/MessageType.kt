@@ -24,10 +24,10 @@ class LoadingMessage(val msgType: Type, val value: Any?): EventEmitter.Message {
         DEFAULT("DEFAULT"),
         INIT("INIT"),
         SCANNING("SCANNING"),
-        SCANDONE("SCANDONE"),
+        SCANDONE("SCAN_DONE"),
         CONNECTING("CONNECTING"),
         CONNECTED("CONNECTED"),
-        CONNECTFAILED("CONNECTFAILED")
+        CONNECTFAILED("CONNECT_FAILED")
     }
 }
 
@@ -35,6 +35,15 @@ class IntermediateMessage(val msgType: Type, val value: Any?): EventEmitter.Mess
     override val type = "IntermediateMessage"
     enum class Type(val value: String){
         SWITCH_VIEW("SWITCH_VIEW")
+    }
+}
+
+
+class WifiDetailMessage(val msgType: Type, val value: Any?): EventEmitter.Message {
+    override val type = "WifiDetailMessage"
+    enum class Type(val value: String){
+        INIT("INIT"),
+        GET_INTERFACE_DETAIL("GET_INTERFACE_DETAIL")
     }
 }
 

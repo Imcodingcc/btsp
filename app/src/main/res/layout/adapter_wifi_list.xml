@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
             <variable
                 name="ssid"
-                type="cn.leither.btsp.entity.SsId"/>
+                type="cn.leither.btsp.entity.SearchableWifi"/>
     </data>
     <LinearLayout
-        android:paddingRight="20sp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:weightSum="100"
         android:gravity="center"
-        android:layout_height="40sp">
+        android:layout_height="60dp"
+        android:baselineAligned="false"
+        tools:ignore="RtlSymmetry">
         <LinearLayout
-            android:id="@+id/will_connect_loading"
-            android:gravity="center"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/right"/>
-        </LinearLayout>
-        <LinearLayout
-            android:background="@drawable/cut_off_rule"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_weight="50"
+            android:layout_weight="85"
             android:layout_width="0dp"
             android:layout_height="match_parent">
             <TextView
@@ -37,10 +28,9 @@
                 android:text="@{ssid.showName}"/>
         </LinearLayout>
         <LinearLayout
-            android:background="@drawable/cut_off_rule"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_weight="30"
+            android:layout_weight="15"
             android:layout_width="0dp"
             android:layout_height="match_parent">
             <ImageView

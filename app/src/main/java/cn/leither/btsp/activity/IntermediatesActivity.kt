@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Fragment
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v7.app.AppCompatDelegate
+import android.util.Log
 import cn.leither.btsp.handlemsg.EventEmitter
 import cn.leither.btsp.handlemsg.IntermediateMessage
 import cn.leither.btsp.fragment.LoadingFragment

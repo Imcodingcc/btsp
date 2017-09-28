@@ -23,7 +23,6 @@ class WifiListAdapter(context: Context, list: List<Any>, layoutId: Int, variable
             DataBindingUtil.getBinding(convertView)
         }
         binding!!.setVariable(variableId, list[position])
-        binding.root.will_connect_loading.removeAllViews()
         binding.root.setOnClickListener({
             val dialog = CreateConnDialogFragment(state!!, state!!.wl[position].name, binding)
             dialog.show(context.fragmentManager, "CONNECT_WIFI")

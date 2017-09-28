@@ -17,37 +17,24 @@ class ConnectTask(val state: LoadingState): AsyncTask<Unit, BluetoothSocket?, Bo
     }
 
     private fun isConnected(): Boolean{
-        val deviceSet = state.devices
-        val it = deviceSet.iterator()
-        while(it.hasNext()){
-            val d = it.next()
-            val socket: BluetoothSocket
-            try {
-                socket = d.createInsecureRfcommSocketToServiceRecord(Const.uuid)
-                socket.connect()
-                if(socket.isConnected){
-                    state.sockets.add(socket)
-                    state.connectedSocket = socket
-                }
-                publishProgress(socket)
-                return state.sockets.isNotEmpty()
-            } catch (e: IOException) {
-                Thread.sleep(100)
-            } finally {
-            }
+        val device = state.device
+        val socket = device.createInsecureRfcommSocketToServiceRecord(Const.uuid)
+        try {
+            socket.connect()
+        }catch (e: IOException) {
+
         }
-        return false
+        publishProgress(socket)
+        return socket.isConnected
     }
 
     override fun onPostExecute(result: Boolean) {
         super.onPostExecute(result)
         if (result) {
-            Log.d("BTSP", String.format("connected"))
-            state.toStage(LoadingState.Stage.CONNECTED, state.activity::toConnected)
+            state.toStage(LoadingState.Stage.CONNECTED, state.activity::toScanningDev)
         } else {
-            state.toStage(LoadingState.Stage.CONNECTFAILED, state.activity::toConnectFailed)
-            Log.d("BTSP", String.format("connect failed"))
+            Log.d("BTSP", "连接失败了")
+            state.toStage(LoadingState.Stage.CONNECT_FAILED, state.activity::toConnectFailed)
         }
     }
-
 }

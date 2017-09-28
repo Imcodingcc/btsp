@@ -62,12 +62,6 @@ class CreateConnDialogFragment @SuppressLint("ValidFragment") constructor
         }
         binding!!.surePassword.setOnClickListener({
             dismiss()
-            //item_binding.root.will_connect_loading.removeAllViews()
-            //val params = LinearLayout.LayoutParams(60, 60)
-            //val al = AVLoadingIndicatorView(activity)
-            //al.layoutParams = params
-            //al.setIndicatorColor(R.color.gray)
-            //item_binding.root.will_connect_loading.addView(al)
             val position = binding!!.wepDevList.checkedItemPosition
             if(ListView.INVALID_POSITION != position){
                 val map: MutableMap<String, String> = HashMap()

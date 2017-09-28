@@ -7,7 +7,7 @@ import android.support.annotation.RequiresApi
 import android.util.Log
 import cn.leither.btsp.handlemsg.EventEmitter
 import cn.leither.btsp.handlemsg.WifiListMessage
-import cn.leither.btsp.entity.SsId
+import cn.leither.btsp.entity.SearchableWifi
 import cn.leither.btsp.state.WifiListState
 import cn.leither.btsp.utile.CommandHandler
 import org.json.JSONObject
@@ -109,13 +109,13 @@ class ScanWifiListTask(val state: WifiListState): AsyncTask<Unit, JSONObject, Bo
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun transWl(data: JSONObject): List<SsId>{
+    private fun transWl(data: JSONObject): List<SearchableWifi>{
         val ja = data.getJSONObject("reply")
         Log.d("REPLY", ja.toString())
-        val list: ObservableArrayList<SsId> = ObservableArrayList()
+        val list: ObservableArrayList<SearchableWifi> = ObservableArrayList()
         ja.keys().forEach { e ->
             val uuid = state.kwl.filter { e2 -> e2.name.split("@")[0] == e }.map { e3-> e3.uuid}
-            list.add(SsId(state.activity.activity.applicationContext, e,
+            list.add(SearchableWifi(state.activity.activity.applicationContext, e,
                     ja.getJSONObject(e).getString("signal").toInt(),
                     ja.getJSONObject(e).getString("encryption"),
                     uuid.isNotEmpty(), uuid as MutableList<String>))

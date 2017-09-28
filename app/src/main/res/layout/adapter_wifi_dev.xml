@@ -2,8 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
             <variable
-                name="wi"
-                type="cn.leither.btsp.entity.Wi"/>
+                name="ifname"
+                type="cn.leither.btsp.entity.Ifname"/>
     </data>
     <LinearLayout
         android:orientation="vertical" android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="30sp"
-                android:text="@{wi.dev}"/>
+                android:text="@{ifname.dev}"/>
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:text="@{wi.state}"/>
+                android:text="@{ifname.state}"/>
         </LinearLayout>
     </LinearLayout>
 </layout>

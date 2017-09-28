@@ -12,6 +12,7 @@ class CommandHandler {
         private fun getCommand(command: String, socket: BluetoothSocket): CommonCommand? {
             return when (command) {
                 "ACTIVATE_WIFI_CONNECTION" -> ActivateWifiConnection(socket)
+                "GET_INTERFACE_DETAIL" -> GetInterfaceDetailCommand(socket)
                 "DELETE_WIFI_CONNECTION" -> DeleteWIfiConnection(socket)
                 "CREATE_WIFI_CONNECTION" -> CreateWifiConnection(socket)
                 "GET_WIFI_CONNECTION" -> GetWifiConnection(socket)

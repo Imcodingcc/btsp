@@ -1,28 +1,24 @@
 package cn.leither.btsp.state
 
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothSocket
 import android.util.Log
 import cn.leither.btsp.task.ScanWifiListTask
 import cn.leither.btsp.handlemsg.State
 import cn.leither.btsp.fragment.WifiListFragment
-import cn.leither.btsp.entity.KnownWifi
-import cn.leither.btsp.entity.SsId
+import cn.leither.btsp.entity.ConnectedWifi
+import cn.leither.btsp.entity.SearchableWifi
 import java.io.Serializable
-import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.CopyOnWriteArraySet
 
 /**
  * Created by lvqiang on 17-8-28.
  */
 class WifiListState(var stage : Stage = Stage.INIT, val activity: WifiListFragment): Serializable, State {
-    lateinit var device: BluetoothDevice
-    lateinit var scanWifiListTask: ScanWifiListTask
-    lateinit var cwl: MutableList<KnownWifi>
-    lateinit var kwl: MutableList<KnownWifi>
-    lateinit var wl: List<SsId>
     lateinit var devl: List<String>
+    lateinit var device: BluetoothDevice
+    lateinit var wl: List<SearchableWifi>
+    lateinit var cwl: MutableList<ConnectedWifi>
+    lateinit var kwl: MutableList<ConnectedWifi>
+    lateinit var scanWifiListTask: ScanWifiListTask
 
     enum class Stage(value: String) {
         DEFAULT("DEFAULT"),
