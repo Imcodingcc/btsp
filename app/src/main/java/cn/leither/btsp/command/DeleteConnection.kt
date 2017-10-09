@@ -3,10 +3,11 @@ package cn.leither.btsp.command
 import android.bluetooth.BluetoothSocket
 import org.json.JSONObject
 
-class DisConnectWifi(socket: BluetoothSocket) : CommonCommand(socket) {
+class DeleteConnection(socket: BluetoothSocket): CommonCommand(socket){
     override fun request(): JSONObject {
-        val obj  = JSONObject("{'request': 'disconnectWifi'}")
+        val obj  = JSONObject("{'request': 'deleteConnection'}")
         obj.put("param", param)
         return obj
     }
 }
+

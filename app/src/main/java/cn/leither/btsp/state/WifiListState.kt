@@ -2,23 +2,18 @@ package cn.leither.btsp.state
 
 import android.bluetooth.BluetoothDevice
 import android.util.Log
-import cn.leither.btsp.task.ScanWifiListTask
 import cn.leither.btsp.handlemsg.State
-import cn.leither.btsp.fragment.WifiListFragment
+import cn.leither.btsp.fragment.ConnectedFragment
 import cn.leither.btsp.entity.ConnectedWifi
 import cn.leither.btsp.entity.SearchableWifi
 import java.io.Serializable
 
-/**
- * Created by lvqiang on 17-8-28.
- */
-class WifiListState(var stage : Stage = Stage.INIT, val activity: WifiListFragment): Serializable, State {
-    lateinit var devl: List<String>
+class WifiListState(var stage : Stage = Stage.INIT, val activity: ConnectedFragment): Serializable, State {
+    lateinit var devl: ArrayList<String>
     lateinit var device: BluetoothDevice
     lateinit var wl: List<SearchableWifi>
     lateinit var cwl: MutableList<ConnectedWifi>
     lateinit var kwl: MutableList<ConnectedWifi>
-    lateinit var scanWifiListTask: ScanWifiListTask
 
     enum class Stage(value: String) {
         DEFAULT("DEFAULT"),
@@ -44,9 +39,9 @@ class WifiListState(var stage : Stage = Stage.INIT, val activity: WifiListFragme
         CREATE_WIFI_CONNECTION("CREATE_WIFI_CONNECTION"),
         CREATED_WIFI_CONNECTION("CREATED_WIFI_CONNECTION"),
         CREATE_WIFI_FAILED("CREATE_WIFI_FAILED"),
-        DELETE_WIFI_CONNECTION("DELETE_WIFI_CONNECTION"),
-        DELETE_WIFI_CONNECTION_DONE("DELETE_WIFI_CONNECTION_DONE"),
-        DELETE_WIFI_CONNECTION_FAILED("DELETE_WIFI_CONNECTION_FAILED"),
+        DELETE_CONNECTION("DELETE_CONNECTION"),
+        DELETE_CONNECTION_DONE("DELETE_CONNECTION_DONE"),
+        DELETE_CONNECTION_FAILED("DELETE_CONNECTION_FAILED"),
         DISCONNECTING("DISCONNECTING"),
         DISCONNECTED("DISCONNECTED"),
         DISCONNECT_FAILED("DISCONNECT_FAILED"),

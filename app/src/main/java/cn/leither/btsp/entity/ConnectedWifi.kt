@@ -1,6 +1,8 @@
 package cn.leither.btsp.entity
 
-class ConnectedWifi(var name: String, var state: String, val lock: String, val uuid: String){
+import java.io.Serializable
+
+class ConnectedWifi(var name: String, var state: String, val lock: String, val uuid: String): Serializable{
 
     var showState:String? = null
     var showName: String? = null

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="wifi_name"
+            type="String"/>
+        <variable
+            name="i_face"
+            type="String"/>
+        <variable
+            name="password"
+            type="String"/>
+    </data>
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/choose_wifi_title"
+                android:text="创建连接"
+                android:textSize="20sp"
+                android:background="@drawable/cut_off_rule"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="50sp" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:id="@+id/show_wifi_list"
+                    android:weightSum="100"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:background="@drawable/cut_off_rule"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="60dp"
+                    tools:ignore="UselessParent">
+                    <TextView
+                        android:text="网络"
+                        android:gravity="left"
+                        android:layout_weight="20"
+                        android:textSize="17sp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        tools:ignore="RtlHardcoded" />
+                    <TextView
+                        android:text="@{wifi_name}"
+                        android:gravity="left"
+                        android:textSize="17sp"
+                        android:layout_weight="70"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        tools:ignore="RtlHardcoded" />
+                    <ImageView
+                        android:layout_weight="10"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_expand_more_black_24dp"
+                        />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/show_interface"
+                    android:weightSum="100"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:background="@drawable/cut_off_rule"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="60dp"
+                    tools:ignore="UselessParent">
+                    <TextView
+                        android:text="网卡"
+                        android:gravity="left"
+                        android:layout_weight="20"
+                        android:textSize="17sp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        tools:ignore="RtlHardcoded" />
+                    <TextView
+                        android:text="@{i_face}"
+                        android:gravity="left"
+                        android:textSize="17sp"
+                        android:layout_weight="70"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        tools:ignore="RtlHardcoded" />
+                    <ImageView
+                        android:layout_weight="10"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_expand_more_black_24dp"
+                        />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/e_password_box"
+                    android:weightSum="100"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:background="@drawable/cut_off_rule"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="60dp"
+                    tools:ignore="UselessParent">
+                    <TextView
+                        android:text="密码"
+                        android:gravity="left"
+                        android:layout_weight="20"
+                        android:textSize="17sp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        tools:ignore="RtlHardcoded" />
+                    <EditText
+                        android:id="@+id/passWd"
+                        android:background="@null"
+                        android:textSize="17sp"
+                        android:layout_weight="70"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        tools:ignore="LabelFor,RtlHardcoded"
+                        android:inputType="" />
+                    <ImageView
+                        android:layout_weight="10"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_expand_more_black_24dp"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="20dp"
+                    android:weightSum="100"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:background="@drawable/cut_off_rule"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="50dp"
+                    tools:ignore="UselessParent">
+                    <Button
+                        android:id="@+id/connect_submit"
+                        android:layout_weight="100"
+                        android:layout_width="0dp"
+                        android:text="确定"
+                        android:textSize="17sp"
+                        android:textColor="@color/white"
+                        android:background="@drawable/radius_color3_button"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>

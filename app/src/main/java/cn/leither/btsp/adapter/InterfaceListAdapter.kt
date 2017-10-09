@@ -7,14 +7,11 @@ import android.databinding.ViewDataBinding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import cn.leither.btsp.fragment.CreateConnDialogFragment
 import cn.leither.btsp.handlemsg.ConnectMessage
 import cn.leither.btsp.handlemsg.EventEmitter
 import cn.leither.btsp.state.ConnectState
-import cn.leither.btsp.state.WifiListState
-import kotlinx.android.synthetic.main.adapter_wifi_list.view.*
 
-class WifiListAdapter(context: Context, list: List<Any>, layoutId: Int, variableId: Int) : CommonAdapter(context, list, layoutId, variableId){
+class InterfaceListAdapter(context: Context, list: List<Any>, layoutId: Int, variableId: Int) : CommonAdapter(context, list, layoutId, variableId){
 
     lateinit var state: ConnectState
     val ee = EventEmitter.default
@@ -28,7 +25,7 @@ class WifiListAdapter(context: Context, list: List<Any>, layoutId: Int, variable
         }
         binding!!.setVariable(variableId, list[position])
         binding.root.setOnClickListener({
-            ee.emit(ConnectMessage(ConnectMessage.Type.WIFI_LIST_DIALOG_CLOSE, state.wl[position]))
+            ee.emit(ConnectMessage(ConnectMessage.Type.INTERFACE_LIST_DIALOG_CLOSE, state.devl[position]))
         })
         return binding.root
     }

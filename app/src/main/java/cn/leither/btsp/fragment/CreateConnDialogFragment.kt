@@ -46,7 +46,6 @@ class CreateConnDialogFragment @SuppressLint("ValidFragment") constructor
                         val uuid = state.kwl.filter { e-> e.name == groupName }[0].uuid
                         val map: MutableMap<String, String> = HashMap()
                         map["uuid"] = uuid
-                        state.toStage(WifiListState.Stage.DELETE_WIFI_CONNECTION, state.activity::toDeleteConnection, map)
                     }else{
                         //TODO
                     }
@@ -65,17 +64,16 @@ class CreateConnDialogFragment @SuppressLint("ValidFragment") constructor
             val position = binding!!.wepDevList.checkedItemPosition
             if(ListView.INVALID_POSITION != position){
                 val map: MutableMap<String, String> = HashMap()
-                //al.smoothToShow()
                 map["iface"] = state.devl[position]
                 val groupName= ssid + "@" + state.devl[position]
                 map["name"] = groupName
                 map["ssid"] = ssid
                 if(isKnown){
                     map["uuid"] = state.kwl.filter { e-> e.name == groupName }[0].uuid
-                    state.toStage(WifiListState.Stage.CANCEL_SCAN_WIFI, state.activity::toCancelScanWifiForActivateConnect, map)
+                    //state.toStage(WifiListState.Stage.CANCEL_SCAN_WIFI, state.activity::toCancelScanWifiForActivateConnect, map)
                 }else{
                     map["password"] = binding!!.ePassword.text.toString()
-                    state.toStage(WifiListState.Stage.CANCEL_SCAN_WIFI, state.activity::toCancelScanWifiForCreateConnConnect, map)
+                    //state.toStage(WifiListState.Stage.CANCEL_SCAN_WIFI, state.activity::toCancelScanWifiForCreateConnConnect, map)
                 }
             }else{
                 //TODO

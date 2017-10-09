@@ -44,10 +44,9 @@ class ConnectedWifiAdapter(context: Context, list: List<Any>, layoutId: Int, var
         binding.root.setOnClickListener({
             val intent = Intent("wifiDetail")
             intent.putExtra("name", state!!.cwl[position].name)
+            intent.putExtra("uuid", state!!.cwl[position].uuid)
             intent.putExtra("device", state!!.device)
             context.startActivity(intent)
-            //val dialog = ConnectedDetailDialogFragment(state!!, state!!.cwl[position].name, state!!.cwl[position].state, binding)
-            //dialog.show(context.fragmentManager, "WIFI_DETAIL")
         })
         return binding.root
     }

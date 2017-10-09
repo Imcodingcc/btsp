@@ -61,6 +61,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp">
                         <TextView
+                            android:id="@+id/add_more_connection"
                             android:layout_weight="80"
                             android:paddingStart="16dp"
                             android:paddingEnd="0sp"
@@ -69,13 +70,6 @@
                             android:layout_width="0dp"
                             android:textSize="20sp"
                             android:layout_height="match_parent" />
-                        <com.wang.avi.AVLoadingIndicatorView
-                            android:id="@+id/choose_wifi_search"
-                            android:layout_width="20sp"
-                            android:layout_height="20sp"
-                            app:indicatorColor="@android:color/holo_blue_light"
-                            app:indicatorName="LineSpinFadeLoaderIndicator"/>
-
                     </LinearLayout>
                     <LinearLayout
                         android:orientation="vertical"

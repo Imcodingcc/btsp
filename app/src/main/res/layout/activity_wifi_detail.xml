@@ -205,16 +205,18 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     tools:ignore="NestedWeights">
+
                     <Button
+                        android:id="@+id/disconnInDetail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="95"
-                        android:text="断开接连"
+                        android:background="@drawable/disconnect_btn"
                         android:gravity="center"
-                        android:textSize="15sp"
+                        android:text="断开接连"
                         android:textColor="@color/white"
-                        android:background="@drawable/radius_color2_button"
-                        android:layout_height="wrap_content"
-                        android:layout_width="0dp" />
+                        android:textSize="15sp" />
 
                 </LinearLayout>
 
@@ -226,16 +228,18 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     tools:ignore="NestedWeights">
+
                     <Button
+                        android:id="@+id/forgetInDetail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="96"
-                        android:text="忘记网络"
-                        android:gravity="center"
-                        android:textSize="15sp"
-                        android:textColor="@color/white"
                         android:background="@drawable/radius_color1_button"
-                        android:layout_height="wrap_content"
-                        android:layout_width="0dp" />
+                        android:gravity="center"
+                        android:text="忘记网络"
+                        android:textColor="@color/white"
+                        android:textSize="15sp" />
                 </LinearLayout>
 
             </LinearLayout>

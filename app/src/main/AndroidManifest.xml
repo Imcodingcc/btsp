@@ -11,15 +11,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.IntermediatesActivity">
+        <activity android:name=".activity.IntermediatesActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="main" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
-        <activity android:name=".activity.WifiDetailActivity">
+        <activity android:name=".activity.WifiDetailActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="wifiDetail"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.ConnectActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="connect"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>

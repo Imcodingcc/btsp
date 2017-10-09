@@ -9,7 +9,7 @@ import cn.leither.btsp.handlemsg.State
 import java.io.Serializable
 
 class LoadingState(var stage : Stage = Stage.INIT, val activity: LoadingFragment): Serializable, State {
-    lateinit var devl: List<String>
+    lateinit var devl: ArrayList<String>
     lateinit var device: BluetoothDevice
     lateinit var connectTask: ConnectTask
     lateinit var cwl: MutableList<ConnectedWifi>

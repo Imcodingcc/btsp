@@ -11,12 +11,12 @@ class CommandHandler {
     companion object {
         private fun getCommand(command: String, socket: BluetoothSocket): CommonCommand? {
             return when (command) {
-                "ACTIVATE_WIFI_CONNECTION" -> ActivateWifiConnection(socket)
+                "ACTIVATE_CONNECTION" -> ActivateConnection(socket)
                 "GET_INTERFACE_DETAIL" -> GetInterfaceDetailCommand(socket)
-                "DELETE_WIFI_CONNECTION" -> DeleteWIfiConnection(socket)
+                "DELETE_CONNECTION" -> DeleteConnection(socket)
                 "CREATE_WIFI_CONNECTION" -> CreateWifiConnection(socket)
                 "GET_WIFI_CONNECTION" -> GetWifiConnection(socket)
-                "DISCONNECT_WIFI" -> DisConnectWifi(socket)
+                "DISCONNECT" -> DisConnectCommand(socket)
                 "GET_WIFI_DEV" -> GetDevCommand(socket)
                 "SCAN_WIFI" -> ScanCommand(socket)
                 else -> null

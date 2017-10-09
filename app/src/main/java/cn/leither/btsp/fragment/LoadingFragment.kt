@@ -1,14 +1,18 @@
 package cn.leither.btsp.fragment
 
 import android.animation.ValueAnimator
+import android.app.Activity
 import android.app.Fragment
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.databinding.DataBindingUtil
 import android.databinding.ObservableArrayList
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +37,7 @@ class LoadingFragment: Fragment(){
     private var mainReceiver: BtspReceiver? = null
     private var mAnimator:ValueAnimator? = null
     private var ba: BluetoothAdapter? = null
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mainReceiver = BtspReceiver()
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_loading, container, false)
@@ -76,6 +81,7 @@ class LoadingFragment: Fragment(){
         val msg = message as AdapterMessage
         when(msg.msgType){
             AdapterMessage.Type.STARTED -> {
+                binding!!.loadingScreen.setOnClickListener {  }
                 binding!!.prompt = "正在扫描盒子"
             }
             AdapterMessage.Type.STOPPED -> {
@@ -129,6 +135,7 @@ class LoadingFragment: Fragment(){
                 }
             }else{
                 saveDeviceList(receive)
+                //TODO there is an error waiting to be resolved here
                 activity.runOnUiThread {
                     old.toStage(LoadingState.Stage.SCANNING_CONNECTED, this::toScanningConnected)
                 }
@@ -153,9 +160,10 @@ class LoadingFragment: Fragment(){
     }
 
     private fun toScanConnectedDone(old: LoadingState){
+        activity.unregisterReceiver(mainReceiver)
         val map = HashMap<String, Any>()
         map["fragmentID"] = R.id.container
-        map["fragment"] = WifiListFragment()
+        map["fragment"] = ConnectedFragment()
         ee.emit(LoadingMessage(LoadingMessage.Type.CONNECTED, null))
         ee.emit(IntermediateMessage(IntermediateMessage.Type.SWITCH_VIEW, map))
         ee.emit(WifiListMessage(WifiListMessage.Type.DEFAULT, old))
@@ -170,18 +178,15 @@ class LoadingFragment: Fragment(){
     private fun onConnectFailed(message: EventEmitter.Message){
         val msg = message as LoadingMessage
         if(msg.msgType == LoadingMessage.Type.CONNECTFAILED){
-            binding!!.prompt = "连接失败了"
+            binding!!.prompt = "连接失败了, 点击屏幕重试"
             mAnimator!!.end()
             mAnimator!!.removeAllListeners()
             binding!!.loadingLogo.scaleX = 1f
             binding!!.loadingLogo.scaleY = 1f
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == OPEN_BLUETOOTH_SUCCESS){
-            state.toStage(LoadingState.Stage.SCANNING, this::toScanning)
+            binding!!.loadingScreen.setOnClickListener {
+                ee.emit(LoadingMessage(LoadingMessage.Type.INIT, true))
+                state.toStage(LoadingState.Stage.SCANNING, this::toScanning)
+            }
         }
     }
 
@@ -193,7 +198,7 @@ class LoadingFragment: Fragment(){
     }
 
     private fun saveDeviceList(re: JSONObject){
-        val devl:MutableList<String> = ObservableArrayList()
+        val devl:ArrayList<String> = ObservableArrayList()
         val json = JSONObject(re.toString())
         val devs = json.getJSONObject("reply")
         devs.keys().forEach { e->
@@ -219,5 +224,24 @@ class LoadingFragment: Fragment(){
         }
         state.kwl = kwl
         return list
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode== -1){
+            ee.emit(LoadingMessage(LoadingMessage.Type.INIT, true))
+            state.toStage(LoadingState.Stage.SCANNING, this::toScanning)
+        }else{
+            binding!!.prompt = "请打开蓝牙"
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ee.unregister(this::onInit)
+        ee.unregister(this::onFound)
+        ee.unregister(this::onScanning)
+        ee.unregister(this::onConnecting)
+        ee.unregister(this::onConnectFailed)
     }
 }

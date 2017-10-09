@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="near_wifi_list_adapter" type="cn.leither.btsp.adapter.CommonAdapter"/>
+    </data>
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/choose_wifi_title"
+            android:text="选取网络"
+            android:textSize="18sp"
+            android:background="@drawable/cut_off_rule"
+            android:gravity="center"
+            android:layout_width="300dp"
+            android:layout_height="45sp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:background="@drawable/radius_color4_button"
+            tools:ignore="UselessParent">
+            <LinearLayout
+                android:id="@+id/loading_or_show_wifi_list"
+                android:orientation="horizontal"
+                android:weightSum="100"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                tools:ignore="UselessParent">
+                <ListView
+                    android:layout_weight="92"
+                    android:id="@+id/near_wifi_list"
+                    android:background="@color/white"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:adapter="@{near_wifi_list_adapter}">
+                </ListView>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</layout>

@@ -44,7 +44,7 @@ class ConnectedDetailDialogFragment @SuppressLint("ValidFragment") constructor
             item_binding.root.loading_or_connected.addView(al)
             val param: MutableMap<String, String> = HashMap()
             param["iface"] = iface
-            state.toStage(WifiListState.Stage.CANCEL_SCAN_WIFI, state.activity::toCancelScanWifiForDisconnect, param)
+            //state.toStage(WifiListState.Stage.CANCEL_SCAN_WIFI, state.activity::toCancelScanWifiForDisconnect, param)
         })
         return binding?.root!!
     }

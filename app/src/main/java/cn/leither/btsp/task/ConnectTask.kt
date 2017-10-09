@@ -1,9 +1,11 @@
 package cn.leither.btsp.task
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothSocket
 import android.os.AsyncTask
 import android.util.Log
 import cn.leither.btsp.state.LoadingState
+import cn.leither.btsp.utile.ClsUtils
 import cn.leither.btsp.utile.Const
 import java.io.IOException
 

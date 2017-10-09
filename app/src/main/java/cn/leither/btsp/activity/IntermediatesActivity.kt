@@ -2,10 +2,11 @@ package cn.leither.btsp.activity
 
 import android.app.Activity
 import android.app.Fragment
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.app.AppCompatDelegate
 import android.util.Log
+import android.view.KeyEvent
 import cn.leither.btsp.handlemsg.EventEmitter
 import cn.leither.btsp.handlemsg.IntermediateMessage
 import cn.leither.btsp.fragment.LoadingFragment
@@ -19,6 +20,7 @@ class IntermediatesActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("BTSP", "onCreate")
         binding = DataBindingUtil.setContentView(this, R.layout.activity_intermediates)
         val map: MutableMap<String, Any> = HashMap<String, Any>()
         map["fragmentID"] = R.id.container
@@ -38,5 +40,18 @@ class IntermediatesActivity : Activity() {
             ft.replace(fi, fg)
             ft.commit()
         }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            moveTaskToBack(false)
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e("BTSP", "MAIN_ACTIVITY_DESTROY")
     }
 }
