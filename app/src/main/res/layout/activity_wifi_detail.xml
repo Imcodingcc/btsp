@@ -235,7 +235,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="96"
-                        android:background="@drawable/radius_color1_button"
+                        android:background="@drawable/delete_connection_btn"
                         android:gravity="center"
                         android:text="忘记网络"
                         android:textColor="@color/white"
